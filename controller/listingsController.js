@@ -9,14 +9,18 @@ module.exports.newListingfrom = (req, res) => {
   res.render("listings/new.ejs");
 };
 
-module.exports.newListingadding = async (req, res) => {
-  const newListing = req.body.listing;
-  const newList = new Listing(newListing);
-  newList.owner = req.user._id;
-  await newList.save();
-  req.flash("success", "Add a new listing sucessfully!");
-  res.redirect("/listing");
-};
+// module.exports.newListingadding = async (req, res) => {
+//   const newListing = req.body.listing;
+//   const newList = new Listing(newListing);
+//   newList.owner = req.user._id;
+//   await newList.save();
+//   req.flash("success", "Add a new listing sucessfully!");
+//   res.redirect("/listing");
+// };
+
+module.exports.newListingadding = (req,res)=>{
+  res.send(req.file);
+}
 
 module.exports.showListings = async (req, res) => {
   const { id } = req.params;
