@@ -132,11 +132,13 @@
               <footer class="blockquote-footer">
                 <cite><%= review.author.username || "Anonymous" %></cite>
               </footer>
+              <% if(currUser &&  currUser._id.equals(listing.owner._id)) { %>
               <form action="/listing/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" class="mt-3">
                 <button type="submit" class="btn btn-sm btn-outline-danger">
                   <i class="fas fa-trash-alt"></i> Delete
                 </button>
               </form>
+              <% } %>
             </div>
           </div>
         <% } %>

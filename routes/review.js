@@ -48,7 +48,7 @@ router.post(
 );
 
 // DELETE Route: Delete a review from a listing
-router.delete("/:Revid",isOwner, async (req, res) => {
+router.delete("/:Revid",checkLogin,isOwner, async (req, res) => {
     // Extract `Revid` (review ID) and `id` (listing ID) from the route parameters
     const { Revid, id } = req.params;
     // Update the listing by removing the reference to the review from its `reviews` array

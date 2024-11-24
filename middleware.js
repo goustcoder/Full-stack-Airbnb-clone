@@ -26,8 +26,8 @@ const isOwner =async (req,res,next)=>{
     const { id } = req.params;
     
     const listing_owner = await Listing.findById(id);
-    console.log(res.locals.currUser._id);
-    console.log(listing_owner.owner._id);
+    // console.log(res.locals.currUser._id);
+    // console.log(listing_owner.owner._id);
    
 
     if (!res.locals.currUser || !listing_owner.owner._id.equals(res.locals.currUser._id)) {
