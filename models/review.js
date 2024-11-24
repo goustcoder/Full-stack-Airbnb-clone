@@ -2,6 +2,7 @@ const { string, number, date } = require('joi');
 const { default: mongoose } = require('mongoose');
 const mongoes = require('mongoose');
 const Schema = mongoes.Schema;
+const User = require('./user');
 
 const reviewSchema = new Schema ({
     comment : String,
@@ -13,6 +14,10 @@ const reviewSchema = new Schema ({
     created_at : {
         type: Date,
         default : Date.now(),
+    },
+    author:{
+        type:Schema.Types.ObjectId,
+        ref:"User",
     }
 })
 
