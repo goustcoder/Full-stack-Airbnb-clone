@@ -15,10 +15,11 @@ const reviewSchema = new Schema ({
         type: Date,
         default : Date.now(),
     },
-    author:{
-        type:Schema.Types.ObjectId,
-        ref:"User",
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: "User", // Ensure the `ref` matches the model name
     }
+    
 })
 
 module.exports = mongoes.model("Review",reviewSchema);

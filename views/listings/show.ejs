@@ -130,7 +130,7 @@
                 <strong>Comment:</strong> <%= review.comment %>
               </p>
               <footer class="blockquote-footer">
-                <cite><%= review.author || "Anonymous" %></cite>
+                <cite><%= review.author.username || "Anonymous" %></cite>
               </footer>
               <form action="/listing/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" class="mt-3">
                 <button type="submit" class="btn btn-sm btn-outline-danger">

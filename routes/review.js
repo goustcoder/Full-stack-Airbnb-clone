@@ -6,6 +6,7 @@ const wrapAsync = require("../utils/wrapAsync.js"); // Utility to handle async e
 const { reviewSchema } = require("../schema.js"); // Schema for validating review data
 const Listing = require("../models/listing.js"); // Listing model to interact with the database
 const Review = require("../models/review.js"); // Review model to interact with the database
+const { checkLogin } = require('../middleware.js');
 
 // Validation middleware for review
 const validateReview = (req, res, next) => {
@@ -24,12 +25,15 @@ const validateReview = (req, res, next) => {
 // POST Route: Add a new review to a listing
 router.post(
     "/", // Base path is defined in the parent route (e.g., `/listing/:id/reviews`)
+    checkLogin,
     validateReview, // Middleware to validate review data before proceeding
     wrapAsync(async (req, res) => {
         // Find the listing by its ID, passed from the parent route
         const list = await Listing.findById(req.params.id);
         // Create a new Review instance with the submitted review data
         const newReview = new Review(req.body.review);
+        newReview.author = req.user._id;
+        console.log(newReview);
         // Add the new review to the `reviews` array of the listing
         list.reviews.push(newReview);
         // Save both the review and the updated listing to the database
