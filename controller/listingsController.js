@@ -9,18 +9,36 @@ module.exports.newListingfrom = (req, res) => {
   res.render("listings/new.ejs");
 };
 
-// module.exports.newListingadding = async (req, res) => {
-//   const newListing = req.body.listing;
-//   const newList = new Listing(newListing);
-//   newList.owner = req.user._id;
-//   await newList.save();
-//   req.flash("success", "Add a new listing sucessfully!");
-//   res.redirect("/listing");
-// };
+module.exports.newListingadding = async (req, res) => {
+  try {
+    // Get the image URL and filename from the uploaded file
+    const { path: url, filename } = req.file;
 
-module.exports.newListingadding = (req,res)=>{
-  res.send(req.file);
-}
+    // Extract the listing details from the form submission
+    const newListing = req.body.listing;
+
+    // Create a new Listing instance
+    const newList = new Listing(newListing);
+
+    // Set the owner of the listing (assuming the user is logged in)
+    newList.owner = req.user._id;
+
+    // Set the image object with url and filename
+    newList.image = { url, filename };
+
+    // Save the new listing to the database
+    await newList.save();
+
+    // Send success message and redirect
+    req.flash("success", "Added a new listing successfully!");
+    res.redirect("/listing");
+  } catch (err) {
+    console.error(err);
+    req.flash("error", "Failed to add the listing.");
+    res.redirect("/listing");
+  }
+};
+
 
 module.exports.showListings = async (req, res) => {
   const { id } = req.params;

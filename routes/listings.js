@@ -6,8 +6,9 @@ const { listingSchema } = require("../schema.js");
 const Listing = require("../models/listing.js");
 const { checkLogin, validateListing } = require("../middleware.js");
 const { isOwner } = require("../middleware.js");
-const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+const multer = require("multer");
+const { storage } = require("../cloudConfig.js");
+const upload = multer({ storage });
 const {
   index,
   newListingfrom,
@@ -21,7 +22,13 @@ const {
 router
   .route("/")
   .get(wrapAsync(index))
-  .post( upload.single('listing[image]'),checkLogin, validateListing, wrapAsync(newListingadding));
+  .post(
+   checkLogin,
+   upload.single("listing[image]"),
+   
+   
+    wrapAsync(newListingadding)
+  );
 
 // New Route: Display form to create a new listing
 router.get("/new", checkLogin, newListingfrom);
