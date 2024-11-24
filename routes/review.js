@@ -6,7 +6,7 @@ const wrapAsync = require("../utils/wrapAsync.js"); // Utility to handle async e
 const { reviewSchema } = require("../schema.js"); // Schema for validating review data
 const Listing = require("../models/listing.js"); // Listing model to interact with the database
 const Review = require("../models/review.js"); // Review model to interact with the database
-const { checkLogin } = require('../middleware.js');
+const { checkLogin, isOwner } = require('../middleware.js');
 
 // Validation middleware for review
 const validateReview = (req, res, next) => {
@@ -48,7 +48,7 @@ router.post(
 );
 
 // DELETE Route: Delete a review from a listing
-router.delete("/:Revid", async (req, res) => {
+router.delete("/:Revid",isOwner, async (req, res) => {
     // Extract `Revid` (review ID) and `id` (listing ID) from the route parameters
     const { Revid, id } = req.params;
     // Update the listing by removing the reference to the review from its `reviews` array
