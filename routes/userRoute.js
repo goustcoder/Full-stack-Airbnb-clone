@@ -11,23 +11,19 @@ const {
   logout,
 } = require("../controller/userController.js");
 
-// Signup Routes
-router.get("/signup", signupFrom);
+router.route("/signup").get(signupFrom).post(signup);
 
-router.post("/signup", signup);
-
-// Login Routes
-router.get("/login", loginFrom);
-
-router.post(
-  "/login",
-  saveRedirectUrl,
-  passport.authenticate("local", {
-    failureRedirect: "/login",
-    failureFlash: true,
-  }),
-  login
-);
+router
+  .route("/login")
+  .get(loginFrom)
+  .post(
+    saveRedirectUrl,
+    passport.authenticate("local", {
+      failureRedirect: "/login",
+      failureFlash: true,
+    }),
+    login
+  );
 
 router.get("/logout", logout);
 

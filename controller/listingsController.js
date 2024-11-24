@@ -47,18 +47,25 @@ module.exports.editListingsFrom = async (req, res) => {
 };
 
 module.exports.editListings = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params; // Extract listing ID from route parameters
+  const data = req.body; // Retrieve data from the request body
 
-  await Listing.findByIdAndUpdate(id, {
-    title: data.title,
-    description: data.description,
-    image: data.image,
-    price: data.price,
-    location: data.location,
-    country: data.country,
-  });
-  req.flash("success", "Listing edited sucessfully!");
-  res.redirect(`/listing/${id}`);
+  try {
+    await Listing.findByIdAndUpdate(id, {
+      title: data.title,
+      description: data.description,
+      image: data.image,
+      price: data.price,
+      location: data.location,
+      country: data.country,
+    });
+    req.flash("success", "Listing edited successfully!");
+    res.redirect(`/listing/${id}`);
+  } catch (error) {
+    console.error("Error updating listing:", error);
+    req.flash("error", "Failed to edit the listing.");
+    res.redirect(`/listing/${id}`);
+  }
 };
 
 module.exports.destroyListings = async (req, res) => {
