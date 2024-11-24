@@ -1,0 +1,239 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container mt-5">
+  <!-- Title Section -->
+  <div class="row">
+    <div class="col-md-8 offset-md-2 text-center">
+      <h1 class="mb-4 text-primary fw-bold" style="animation: fadeIn 1.5s;"><%= listing.title %></h1>
+    </div>
+  </div>
+
+  <!-- Listing Details Section -->
+  <div class="row mt-5">
+    <div class="col-md-8 offset-md-2">
+      <div class="card shadow-lg border-0" style="border-radius: 15px;">
+        
+        <!-- Image Section -->
+        <div class="card-img-top">
+          <img 
+            src="<%= listing.image %>" 
+            class="img-fluid w-100" 
+            alt="Listing Image" 
+            style="max-height: 300px; object-fit: cover; animation: fadeIn 1.5s;">
+        </div>
+        
+        <!-- Details Section -->
+        <div class="card-body m-4" style="padding: 30px; animation: fadeInUp 1.5s;">
+          <h5 class="text-secondary mb-3">
+            <i class="fas fa-user-circle"></i> 
+            <strong>Posted by:</strong> <span class="text-primary fw-bold"><%= listing.owner.username %></span>
+          </h5>
+          <p class="card-text mb-3">
+            <strong class="text-dark">Description:</strong>
+            <span class="text-muted"><%= listing.description %></span>
+          </p>
+          <p class="card-text mb-3">
+            <strong class="text-dark">Price:</strong>
+            <span class="text-success fw-bold">&#x20B9;<%= listing.price.toLocaleString("en-IN") %></span>
+          </p>
+          <p class="card-text mb-3">
+            <strong class="text-dark">Location:</strong>
+            <span class="text-muted"><%= listing.location %></span>
+          </p>
+          <p class="card-text mb-0">
+            <strong class="text-dark">Country:</strong>
+            <span class="text-muted"><%= listing.country %></span>
+          </p>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  
+  <!-- Buttons Section -->
+  <% if(currUser &&  currUser._id.equals(listing.owner._id)) { %>
+  <div class="row mt-4">
+    <div class="col-md-4 offset-md-2">
+      <a href="/listing/<%= listing._id %>/edit" class="btn btn-outline-primary btn-lg w-100" style="animation: fadeInUp 1s;">
+        <i class="fas fa-edit"></i> Edit
+      </a>
+    </div>
+    <div class="col-md-4">
+      <form method="POST" action="/listing/<%= listing._id %>?_method=DELETE">
+        <button type="submit" class="btn btn-outline-danger btn-lg w-100" style="animation: fadeInUp 1s;">
+          <i class="fas fa-trash-alt"></i> Delete
+        </button>
+      </form>
+    </div>
+  </div>
+<% } %>
+  <!-- Review Section -->
+  <div class="row mt-5">
+    <div class="col-md-8 offset-md-2">
+      <hr>
+      <h3 class="text-secondary mb-4">Leave a Review</h3>
+      <form action="/listing/<%= listing._id %>/reviews" method="POST" novalidate class="needs-validation" style="animation: fadeInUp 1.5s;">
+        <div class="mb-4">
+          <label for="rating" class="form-label">Rating</label>
+          <!-- Emoji Display -->
+          <div id="emoji-display" style="font-size: 3rem; margin-bottom: 10px;">😐</div>
+          <input 
+            type="range" 
+            min="1" 
+            max="5" 
+            id="rating" 
+            name="review[rating]" 
+            class="form-range custom-range" 
+            required 
+            onchange="updateEmoji()" 
+            style="width: 100%;"
+          >
+          <div class="d-flex justify-content-between">
+            <span>1</span>
+            <span>2</span>
+            <span>3</span>
+            <span>4</span>
+            <span>5</span>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label for="comment" class="form-label">Comment</label>
+          <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" placeholder="Write your review here..." required></textarea>
+        </div>
+        <button class="btn btn-primary btn-lg w-100" type="submit">Submit Review</button>
+      </form>
+    </div>
+  </div>
+  
+  <!-- All Reviews Section -->
+  <div class="row mt-5">
+    <div class="col-md-8 offset-md-2">
+      <h3 class="text-secondary mb-4">All Reviews</h3>
+      <% if (listing.reviews.length > 0) { %>
+        <% for (let review of listing.reviews) { %>
+          <div class="card mb-4 shadow-sm border-0" style="animation: fadeInUp 1s;">
+            <div class="card-body">
+              <h5 class="text-warning mb-2">
+                <% for (let i = 1; i <= 5; i++) { %>
+                  <% if (i <= review.rating) { %>
+                    <i class="fas fa-star <%= review.rating <= 2 ? 'text-danger' : 'text-warning' %>"></i>
+                  <% } else { %>
+                    <i class="fas fa-star text-muted"></i>
+                  <% } %>
+                <% } %>
+                <span class="text-dark"><%= review.rating %>/5</span>
+              </h5>
+              <p class="card-text">
+                <strong>Comment:</strong> <%= review.comment %>
+              </p>
+              <footer class="blockquote-footer">
+                <cite><%= review.author || "Anonymous" %></cite>
+              </footer>
+              <form action="/listing/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" class="mt-3">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="fas fa-trash-alt"></i> Delete
+                </button>
+              </form>
+            </div>
+          </div>
+        <% } %>
+      <% } else { %>
+        <div class="alert alert-light text-center shadow-sm" role="alert" style="animation: fadeInUp 1s;">
+          <i class="fas fa-info-circle"></i> No reviews yet. Be the first to leave one!
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+   /* Custom styles for the range slider */
+   .form-range.custom-range {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 15px;
+    background: #ddd;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+
+  .form-range.custom-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-range.custom-range::-webkit-slider-thumb:hover {
+    background: #0056b3;
+  }
+
+  .form-range.custom-range:focus {
+    outline: none;
+  }
+
+  .form-range.custom-range:focus::-webkit-slider-thumb {
+    background: #0056b3;
+  }
+
+  .form-range.custom-range::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-range.custom-range::-moz-range-thumb:hover {
+    background: #0056b3;
+  }
+</style>
+
+<script>
+  // Function to update the emoji based on the rating value
+  function updateEmoji() {
+    var rating = document.getElementById('rating').value;
+    var emojiDisplay = document.getElementById('emoji-display');
+
+    if (rating == 1) {
+      emojiDisplay.textContent = '😔'; // Disappointed emoji for 1 star
+    } else if (rating == 2) {
+      emojiDisplay.textContent = '😕'; // Unsure emoji for 2 stars
+    } else if (rating == 3) {
+      emojiDisplay.textContent = '😐'; // Neutral emoji for 3 stars
+    } else if (rating == 4) {
+      emojiDisplay.textContent = '😊'; // Content emoji for 4 stars
+    } else if (rating == 5) {
+      emojiDisplay.textContent = '😁'; // Very happy emoji for 5 stars
+    }
+  }
+
+  // Initialize emoji on page load based on the default rating (if any)
+  document.addEventListener('DOMContentLoaded', function() {
+    updateEmoji();
+  });
+</script>
